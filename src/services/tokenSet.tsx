@@ -37,15 +37,78 @@ export function getContract(
   return contract
 }
 
-export function getTokenBalance(library: any,
+// export async function getTokenBalance(
+//   library: any,
+//   chainId: number,
+//   contractAddress: string,
+//   account: string
+//   ): Promise<T> {
+//     const contract = getContract(library, contractAddress)
+//     const balance = await contract?.balanceOf(account)
+//     return balance 
+//   }
+
+// export function getTokenBalance(
+//   library: any,
+//   chainId: number,
+//   contractAddress: string,
+//   account: string
+// ): (address: string) => Promise<string> {
+//   return async (address: string): Promise<string> => {
+//     const contract = getContract(library, contractAddress)
+//     return contract?.balanceOf(address).then((balance: { toString: () => string }) => balance.toString())
+
+//   }    
+// }
+
+// export function getTokenSymbol(
+//   library: any,
+//   chainId: number,
+//   contractAddress: string,
+//   account: string
+// ): (address: string) => Promise<string> {
+//   return async (address: string): Promise<string> => {
+//     const contract = getContract(library, contractAddress)
+//     return contract?.symbol().then((symbol: { toString: () => string }) => symbol.toString())
+
+//   }    
+// }
+
+export const getTokenBalance = async (
+  library: any,
   chainId: number,
   contractAddress: string,
-  account: string): (address: string) => Promise<string> {
+  account: string): Promise<string> => {
     const contract = getContract(library, contractAddress)
-  return async (address: string): Promise<string> =>
-    contract?.balanceOf(address)
-      .then((balance: { toString: () => string }) => balance.toString())
+    const balance = await contract?.balanceOf(account)
+  
+  return balance
 }
+
+export const getTokenBalance1 = (
+  library: any,
+  chainId: number,
+  contractAddress: string,
+  account: string) => {
+  const resultPromise = new Promise((resolve, reject) => {
+    const contract = getContract(library, contractAddress)
+      resolve(contract?.balanceOf(account))
+  })
+  return  resultPromise
+}
+
+  // export async function getTokenBalance1(
+  //   library: any,
+  //   chainId: number,
+  //   contractAddress: string,
+  //   account: string
+  //   ): Promise<T> {
+  //     const contract = getContract(library, contractAddress)
+  //     const balance = await contract?.balanceOf(account)
+  //     return balance 
+  //   }
+
+
 
 // export function getBalance(
 //   library: any,

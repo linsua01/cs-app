@@ -7,7 +7,7 @@ export const tokensInfo = [
       fee: '2%',
       contractPolygon: '0xff3ee79CB4A7Fe0F78a3634cCfDbFc3CdCD65a64',
       price: 15,
-      amount: 0,
+      amount: '0',
       balance: 0,
     },
     {
@@ -17,7 +17,7 @@ export const tokensInfo = [
       fee: '0%',
       contractPolygon: '0x04A250E193571A5621998F61bb258701c8a6034d',
       price: 1,
-      amount: 0,
+      amount: '0',
       balance: 0,
     },
   ]
