@@ -2,7 +2,7 @@ import { useWeb3React } from '@web3-react/core'
 import { createContext, useEffect, useState } from 'react'
 import { BigNumber } from '@ethersproject/bignumber'
 import { tokensInfo } from '../constants/tokens'
-import { getTokenBalance } from '../services/tokenSet'
+import { getTokenBalance, getTokenPrice } from '../services/tokenSet'
 import { formatEther } from '@ethersproject/units'
 
 interface TokenContextValues {
@@ -28,34 +28,65 @@ export const TokensProvider: React.FC<any> = ({ children }) => {
   const { account, library, chainId } = useWeb3React()
   const [tokens, setTokens] = useState(tokensInfo)
   const [balance, setBalance] = useState(0)
-  const [amount, setAmount] = useState('x')
+
+  // var arr = [1, 2, 3, 4, 5];
+
+  // var results: number[] =
+  //   await Promise.all(
+  //       arr.map(async (item): Promise<number> => {
+  //     await callAsynchronousOperation(item);
+  //     return item + 1;
+  // }));
 
   useEffect(() => {
+    async function getBalance(contract: string, index: number) {
+      const balance = await getTokenBalance(
+        library,
+        chainId || 0,
+        contract,
+        account || '',
+      )
+      const price = await getTokenPrice(
+        library,
+        chainId || 0,
+        contract,
+      )
+      
 
-    async function getBalance(contract: string) {
-      const balance = await getTokenBalance(library, chainId || 0, contract, account || '')
-      console.log(formatEther(BigNumber.from(balance).toString()))
+      if (balance )
+    
+       setTokens((tokens) => (
+        
+        tokens.map((token, i) => {
+         
+            
+            return {...token, 
+                amount: i === index ? formatEther(BigNumber.from(balance).toString()) : token.amount,
+                price: i === index ? Number(formatEther(BigNumber.from(price).toString())) : token.price,
+                balance: i === index ? Number(formatEther(BigNumber.from(balance).toString())) * Number(formatEther(BigNumber.from(price).toString())) : token.balance
+              }
+            
+          }
+          
+       
+       )))
+                 
     }
 
-    setTokens(
-      tokens?.map((token, i) => {
-        getBalance(token.contractPolygon)
-        // return { ...token, balance: token.price * token.amount }
-        return { ...token, balance: 0 }
-      }),
-    )
+    tokens?.map((token, i) => {
+      getBalance(token.contractPolygon, i)
+    })
+
   }, [account, library, chainId])
 
-
+  
   useEffect(() => {
     let balance = 0
     tokens?.map((token, i) => {
-      // balance = balance + (token.price * token.amount) 
-      balance = balance + (0) 
+      balance = balance + (token.price * Number(token.amount))
     })
     setBalance(balance)
   }, [tokens])
-
 
   return (
     <TokensContext.Provider

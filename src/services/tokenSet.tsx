@@ -1,9 +1,11 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import { useWeb3React } from '@web3-react/core'
-import { formatEther } from '@ethersproject/units'
-import { getNetworkToken } from './web3Utils'
 import { Contract, ContractInterface } from '@ethersproject/contracts'
+
+import { exchangeIssuanceV2, USDC } from '../constants/tokenSet'
+
 import tokenSetABI from '../services/ABI/tokenSet.json'
+import exchangeIssuanceV2ABI from '../services/ABI/exchangeIssuanceV2.json'
 
 export function useContract(
   address?: string,
@@ -28,98 +30,37 @@ export function useContract(
 
 export function getContract(
   library: any,
+  ABI: any,
   address?: string,
 ): Contract | undefined {
   const contract =
-    !!address && !!tokenSetABI && !!library
-      ? new Contract(address, tokenSetABI, library)
+    !!address && !!ABI && !!library
+      ? new Contract(address, ABI, library)
       : undefined
   return contract
 }
-
-// export async function getTokenBalance(
-//   library: any,
-//   chainId: number,
-//   contractAddress: string,
-//   account: string
-//   ): Promise<T> {
-//     const contract = getContract(library, contractAddress)
-//     const balance = await contract?.balanceOf(account)
-//     return balance 
-//   }
-
-// export function getTokenBalance(
-//   library: any,
-//   chainId: number,
-//   contractAddress: string,
-//   account: string
-// ): (address: string) => Promise<string> {
-//   return async (address: string): Promise<string> => {
-//     const contract = getContract(library, contractAddress)
-//     return contract?.balanceOf(address).then((balance: { toString: () => string }) => balance.toString())
-
-//   }    
-// }
-
-// export function getTokenSymbol(
-//   library: any,
-//   chainId: number,
-//   contractAddress: string,
-//   account: string
-// ): (address: string) => Promise<string> {
-//   return async (address: string): Promise<string> => {
-//     const contract = getContract(library, contractAddress)
-//     return contract?.symbol().then((symbol: { toString: () => string }) => symbol.toString())
-
-//   }    
-// }
 
 export const getTokenBalance = async (
   library: any,
   chainId: number,
   contractAddress: string,
-  account: string): Promise<string> => {
-    const contract = getContract(library, contractAddress)
-    const balance = await contract?.balanceOf(account)
-  
+  account: string,
+): Promise<string> => {
+  const contract = getContract(library, tokenSetABI, contractAddress)
+  const balance = await contract?.balanceOf(account)
   return balance
 }
 
-export const getTokenBalance1 = (
+export const getTokenPrice = async (
   library: any,
   chainId: number,
   contractAddress: string,
-  account: string) => {
-  const resultPromise = new Promise((resolve, reject) => {
-    const contract = getContract(library, contractAddress)
-      resolve(contract?.balanceOf(account))
-  })
-  return  resultPromise
+): Promise<string> => {
+  const contract = getContract(library, exchangeIssuanceV2ABI, exchangeIssuanceV2.contractPolygon)
+  const price = await contract?.getAmountOutOnRedeemSet(contractAddress, USDC.contractPolygon, '1000000000000000000' )
+  return price
 }
 
-  // export async function getTokenBalance1(
-  //   library: any,
-  //   chainId: number,
-  //   contractAddress: string,
-  //   account: string
-  //   ): Promise<T> {
-  //     const contract = getContract(library, contractAddress)
-  //     const balance = await contract?.balanceOf(account)
-  //     return balance 
-  //   }
-
-
-
-// export function getBalance(
-//   library: any,
-//   chainId: number,
-//   contractAddress: string,
-//   account: string,
-// ) {
-//   const contract = getContract(library, contractAddress)
-//   return async (address: string): Promise<T> =>
-//     await contract?.balanceOf(address)
-// }
 
 
 //   const iCryptoDream = library.

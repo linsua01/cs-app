@@ -30,9 +30,9 @@ export const UserTokens = () => {
                 <th>#</th>
                 <th>Symbol</th>
                 <th>Name</th>
-                <th>Price</th>
-                <th>Amount</th>
-                <th>Balance</th>
+                <th className='text-end'>Price</th>
+                <th className='text-end'>Amount</th>
+                <th className='text-end'>Balance</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -40,7 +40,7 @@ export const UserTokens = () => {
             <tbody className="border-top">
               {tokens?.map(
                 (token, index) =>
-                  token.amount !== 0 && (
+                  token.amount !== '0.0' && (
                     <tr key={index}>
                       <td>
                         <img
@@ -52,9 +52,9 @@ export const UserTokens = () => {
                       </td>
                       <td>{token.symbol}</td>
                       <td>{token.name}</td>
-                      <td>{token.price}</td>
-                      <td>{token.amount}</td>
-                      <td>{token.balance}</td>
+                      <td className='text-end'>${token.price.toFixed(2)}</td>
+                      <td className='text-end'>{Number(token.amount).toFixed(4)}</td>
+                      <td className='text-end'>${token.balance.toFixed(2)}</td>
                       <td>
                         <Button
                           className="me-2 btn-sm"
