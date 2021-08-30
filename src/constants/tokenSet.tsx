@@ -13,35 +13,45 @@ export const activeTokensFrom = [
     symbol: 'WETH',
     name: 'Wrapped Ether',
     contractPolygon: '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619',
-    balance: '0'
+    contract: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+    balance: '0',
+    price: '0'
   },
   {
     id: 1,
     symbol: 'DAI',
     name: 'Dai Stablecoin',
     contractPolygon: '0x8f3cf7ad23cd3cadbd9735aff958023239c6a063',
-    balance: '0'
+    contract: '0x6b175474e89094c44da98b954eedeac495271d0f',
+    balance: '0',
+    price: '0'
   },
   {
     id: 2,
     symbol: 'WMATIC',
     name: 'Wrapped Matic',
     contractPolygon: '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270',
-    balance: '0'
+    contract: '0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0',
+    balance: '0',
+    price: '0'
   },
   {
     id: 3,
     symbol: 'USDT',
     name: 'Tether USD',
     contractPolygon: '0xc2132d05d31c914a87c6611c10748aeb04b58e8f',
-    balance: '0'
+    contract: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+    balance: '0',
+    price: '0'
   },
   {
     id: 4,
     symbol: 'USDC',
     name: 'USD Coin',
     contractPolygon: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
-    balance: '0'
+    contract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    balance: '0',
+    price: '0'
   },
 ]
   

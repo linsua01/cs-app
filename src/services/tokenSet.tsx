@@ -63,6 +63,20 @@ export const getTokenPrice = async (
   return price
 }
 
+export const getEstimatedIssueSetAmount = async (
+  library: any,
+  chainId: number,
+  contractAddressFrom: string,
+  contractAddressTo: string,
+  amountFrom: string
+): Promise<string> => {
+  const contract = getContract(library, exchangeIssuanceV2ABI, exchangeIssuanceV2.contractPolygon)
+  const amountTo = await contract?.getEstimatedIssueSetAmount(contractAddressTo, contractAddressFrom, amountFrom )
+  return amountTo
+}
+
+
+
 
 
 //   const iCryptoDream = library.

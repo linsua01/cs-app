@@ -1,9 +1,7 @@
 import React, { useState } from 'react'
 import {
   Button,
-  Card,
   Col,
-  FloatingLabel,
   Form,
   Nav,
   Row,
@@ -14,7 +12,7 @@ import { SelectTokensFrom, SelectTokensTo } from './components/SwapControls'
 
 export const Swap = () => {
   const [swapActionState, setSwapActionState] = useState('Invest')
-  const { activeTokenFrom, activeTokenTo } = useSwap()
+  const { activeTokenFrom, activeTokenTo, amountFrom, setAmountFrom, amountTo } = useSwap()
 
   return (
     <div>
@@ -36,16 +34,34 @@ export const Swap = () => {
         <Row className="g-2 p-3 border rounded">
           <Col className="col-3">
             <Form.Group className="mb-3">
-              <Form.Label className="text-end">From</Form.Label>
+              <Form.Label className="text-end pt-1">From</Form.Label>
               <SelectTokensFrom />
               <Form.Label className="pt-2">{activeTokenFrom.name}</Form.Label>
             </Form.Group>
           </Col>
           <Col className="col-9">
             <Form.Group className="mb-3 text-end">
-              <Form.Label>Balance: ${Number(activeTokenFrom.balance).toFixed(4)} Max</Form.Label>
-              <Form.Control className="text-end" type="number" placeholder="" />
-              <Form.Label className="pt-2">~$30.00</Form.Label>
+              <Form.Label
+                className="pt-1"
+              >
+                Balance: {Number(activeTokenFrom.balance).toFixed(4)} 
+          
+              </Form.Label>
+              <Button
+                  className="align-top"
+                  size="sm"
+                  variant="link"
+                  onClick={e => setAmountFrom(Number(activeTokenFrom.balance).toFixed(4))}
+                  >Max</Button>
+              <Form.Control 
+                className="text-end" 
+                type="number" 
+                placeholder=""
+                value={amountFrom}
+                onChange={(e) => setAmountFrom(e.currentTarget.value)}
+              />
+                 
+              <Form.Label className="pt-2">~${(Number(activeTokenFrom.price) * Number(activeTokenFrom.balance)).toFixed(2)}</Form.Label>
             </Form.Group>
           </Col>
           <Col className="col-3">
@@ -57,9 +73,13 @@ export const Swap = () => {
           </Col>
           <Col className="col-9">
             <Form.Group className="mb-3 text-end">
-              <Form.Label>Balance: 12,355 Max</Form.Label>
-              <Form.Control className="text-end" type="number" placeholder="" />
-              <Form.Label className="pt-2">~$10.00</Form.Label>
+              <Form.Label>Balance: {Number(activeTokenTo.balance).toFixed(4)}</Form.Label>
+              <Form.Control 
+                className="text-end" 
+                type="number" 
+                placeholder=""
+                value={amountTo}/>
+              <Form.Label className="pt-2">~${(Number(activeTokenTo.price) * Number(activeTokenTo.balance)).toFixed(2)}</Form.Label>
             </Form.Group>
           </Col>
           <Col>
