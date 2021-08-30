@@ -4,6 +4,8 @@ import { Contract, ContractInterface } from '@ethersproject/contracts'
 
 import { exchangeIssuanceV2, USDC } from '../constants/tokenSet'
 
+
+import erc20ABI from '../services/ABI/erc20.json'
 import tokenSetABI from '../services/ABI/tokenSet.json'
 import exchangeIssuanceV2ABI from '../services/ABI/exchangeIssuanceV2.json'
 
@@ -46,7 +48,7 @@ export const getTokenBalance = async (
   contractAddress: string,
   account: string,
 ): Promise<string> => {
-  const contract = getContract(library, tokenSetABI, contractAddress)
+  const contract = getContract(library, erc20ABI, contractAddress)
   const balance = await contract?.balanceOf(account)
   return balance
 }

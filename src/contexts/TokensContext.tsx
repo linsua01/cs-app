@@ -29,15 +29,6 @@ export const TokensProvider: React.FC<any> = ({ children }) => {
   const [tokens, setTokens] = useState(tokensInfo)
   const [balance, setBalance] = useState(0)
 
-  // var arr = [1, 2, 3, 4, 5];
-
-  // var results: number[] =
-  //   await Promise.all(
-  //       arr.map(async (item): Promise<number> => {
-  //     await callAsynchronousOperation(item);
-  //     return item + 1;
-  // }));
-
   useEffect(() => {
     async function getBalance(contract: string, index: number) {
       const balance = await getTokenBalance(
@@ -51,26 +42,22 @@ export const TokensProvider: React.FC<any> = ({ children }) => {
         chainId || 0,
         contract,
       )
-      
 
-      if (balance )
-    
-       setTokens((tokens) => (
-        
-        tokens.map((token, i) => {
-         
-            
-            return {...token, 
-                amount: i === index ? formatEther(BigNumber.from(balance).toString()) : token.amount,
-                price: i === index ? Number(formatEther(BigNumber.from(price).toString())) : token.price,
-                balance: i === index ? Number(formatEther(BigNumber.from(balance).toString())) * Number(formatEther(BigNumber.from(price).toString())) : token.balance
-              }
-            
-          }
-          
-       
-       )))
-                 
+
+      if (balance)
+
+        setTokens((tokens) => (
+
+          tokens.map((token, i) => {
+
+
+            return {
+              ...token,
+              amount: i === index ? formatEther(BigNumber.from(balance).toString()) : token.amount,
+              price: i === index ? Number(formatEther(BigNumber.from(price).toString())) : token.price,
+              balance: i === index ? Number(formatEther(BigNumber.from(balance).toString())) * Number(formatEther(BigNumber.from(price).toString())) : token.balance
+            }
+          })))
     }
 
     tokens?.map((token, i) => {
@@ -79,7 +66,6 @@ export const TokensProvider: React.FC<any> = ({ children }) => {
 
   }, [account, library, chainId])
 
-  
   useEffect(() => {
     let balance = 0
     tokens?.map((token, i) => {

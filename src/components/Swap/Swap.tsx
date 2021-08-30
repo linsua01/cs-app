@@ -8,12 +8,13 @@ import {
   Nav,
   Row,
 } from 'react-bootstrap'
-import { activeTokensFrom } from '../../constants/tokenSet'
+import useSwap from '../../hooks/useSwap'
+
 import { SelectTokensFrom, SelectTokensTo } from './components/SwapControls'
 
 export const Swap = () => {
   const [swapActionState, setSwapActionState] = useState('Invest')
-  const [ActiveTokenFrom, setActiveTokenFrom] = useState(activeTokensFrom[0])
+  const { activeTokenFrom, activeTokenTo } = useSwap()
 
   return (
     <div>
@@ -37,12 +38,12 @@ export const Swap = () => {
             <Form.Group className="mb-3">
               <Form.Label className="text-end">From</Form.Label>
               <SelectTokensFrom />
-              <Form.Label className="pt-2">DAI Stable Coin</Form.Label>
+              <Form.Label className="pt-2">{activeTokenFrom.name}</Form.Label>
             </Form.Group>
           </Col>
           <Col className="col-9">
             <Form.Group className="mb-3 text-end">
-              <Form.Label>Balance: 34,555 Max</Form.Label>
+              <Form.Label>Balance: ${Number(activeTokenFrom.balance).toFixed(4)} Max</Form.Label>
               <Form.Control className="text-end" type="number" placeholder="" />
               <Form.Label className="pt-2">~$30.00</Form.Label>
             </Form.Group>
@@ -51,7 +52,7 @@ export const Swap = () => {
             <Form.Group className="mb-3">
               <Form.Label className="text-end">To</Form.Label>
               <SelectTokensTo />
-              <Form.Label className="pt-2">Common Sense Top10</Form.Label>
+              <Form.Label className="pt-2">{activeTokenTo.name}</Form.Label>
             </Form.Group>
           </Col>
           <Col className="col-9">
