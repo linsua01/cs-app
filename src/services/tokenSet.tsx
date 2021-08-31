@@ -53,6 +53,16 @@ export const getTokenBalance = async (
   return balance
 }
 
+export const getTokenDecimals = async (
+  library: any,
+  chainId: number,
+  contractAddress: string,
+): Promise<string> => {
+  const contract = getContract(library, erc20ABI, contractAddress)
+  const decimals = await contract?.decimals()
+  return decimals
+}
+
 export const getTokenPrice = async (
   library: any,
   chainId: number,
@@ -66,14 +76,40 @@ export const getTokenPrice = async (
 export const getEstimatedIssueSetAmount = async (
   library: any,
   chainId: number,
-  contractAddressFrom: string,
   contractAddressTo: string,
+  contractAddressFrom: string,
   amountFrom: string
 ): Promise<string> => {
   const contract = getContract(library, exchangeIssuanceV2ABI, exchangeIssuanceV2.contractPolygon)
   const amountTo = await contract?.getEstimatedIssueSetAmount(contractAddressTo, contractAddressFrom, amountFrom )
   return amountTo
 }
+
+export const getAmountInToIssueExactSet = async (
+  library: any,
+  chainId: number,
+  contractAddressTo: string,
+  contractAddressFrom: string,
+  amountFrom: string
+): Promise<string> => {
+  const contract = getContract(library, exchangeIssuanceV2ABI, exchangeIssuanceV2.contractPolygon)
+  const amountTo = await contract?.getAmountInToIssueExactSet(contractAddressTo, contractAddressFrom, amountFrom )
+  return amountTo
+}
+
+export const getAmountOutOnRedeemSet = async (
+  library: any,
+  chainId: number,
+  contractAddressTo: string,
+  contractAddressFrom: string,
+  amountFrom: string
+): Promise<string> => {
+  const contract = getContract(library, exchangeIssuanceV2ABI, exchangeIssuanceV2.contractPolygon)
+  const amountTo = await contract?.getAmountOutOnRedeemSet(contractAddressTo, contractAddressFrom, amountFrom )
+  return amountTo
+}
+
+
 
 
 

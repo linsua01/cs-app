@@ -3,13 +3,17 @@ import { createContext, useEffect, useState } from 'react'
 import { tokensInfo } from '../constants/tokens'
 import { activeTokensFrom } from '../constants/tokenSet'
 import {
+    getAmountInToIssueExactSet,
+  getAmountOutOnRedeemSet,
   getEstimatedIssueSetAmount,
   getTokenBalance,
+  getTokenDecimals,
   getTokenPrice,
 } from '../services/tokenSet'
 import { BigNumber } from '@ethersproject/bignumber'
-import { formatEther } from '@ethersproject/units'
+import { formatEther, formatUnits, parseEther, parseUnits } from '@ethersproject/units'
 import { coingeckoGetTokenPrice } from '../services/coingeckoApi'
+import { isConstructorDeclaration } from 'typescript'
 
 interface SwapContextValues {
   activeTokenFrom: any
@@ -50,6 +54,7 @@ export const SwapProvider: React.FC<any> = ({ children }) => {
       )
 
       const price = await coingeckoGetTokenPrice(token.contract)
+      
 
       if (balance)
         setActiveTokenFrom({
@@ -90,10 +95,9 @@ export const SwapProvider: React.FC<any> = ({ children }) => {
         chainId || 0,
         activeTokenTo.contractPolygon,
         activeTokenFrom.contractPolygon,
-        amountFrom,
+        parseUnits(amountFrom, activeTokenFrom.decimals).toString(),
       )
-      console.log(amountTo)
-      //setAmountTo(amountTo)
+     setAmountTo(Number(formatUnits(amountTo,'18')).toFixed(4))
     }
 
     updateSwapInfo()
