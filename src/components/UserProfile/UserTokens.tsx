@@ -57,7 +57,7 @@ export const UserTokens = () => {
                       <td className='text-end'>{Number(token.amount).toFixed(4)}</td>
                       <td className='text-end'>${token.balance.toFixed(2)}</td>
                       <td>
-                      <SwapOffcanvas action='Withdraw'/>
+                      <SwapOffcanvas action='Withdraw' tokenId={token.id}/>
                       </td>
                     </tr>
                   ),

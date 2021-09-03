@@ -74,7 +74,6 @@ export const SwapProvider: React.FC<any> = ({ children }) => {
     )
   }
 
-  // COMBO FROM CHANGE
   useEffect(() => {
     async function updateTokenFrom(token: any) {
       const balance = await getTokenBalance(
@@ -84,7 +83,7 @@ export const SwapProvider: React.FC<any> = ({ children }) => {
         account || '',
       )
 
-      const price = await coingeckoGetTokenPrice(token.contract)
+      const price = '0' //await coingeckoGetTokenPrice(token.contract)
 
       if (balance)
         setActiveTokenFrom({
@@ -92,6 +91,7 @@ export const SwapProvider: React.FC<any> = ({ children }) => {
           balance: formatEther(BigNumber.from(balance).toString()),
           price: price.toString(),
         })
+      
     }
     updateTokenFrom(activeTokenFrom)
   }, [activeTokenFrom.id])
@@ -109,12 +109,14 @@ export const SwapProvider: React.FC<any> = ({ children }) => {
 
       const price = await getTokenPrice(library, chainId || 0, contract)
 
-      if (balance)
+      if (balance) {
         setActiveTokenTo({
           ...activeTokenTo,
           balance: Number(formatEther(BigNumber.from(balance).toString())),
           price: Number(formatEther(BigNumber.from(price).toString())),
         })
+      }
+       
     }
     getBalance(activeTokenTo.contractPolygon)
   }, [activeTokenTo.id])
@@ -161,11 +163,14 @@ export const SwapProvider: React.FC<any> = ({ children }) => {
 
   }, [swapResult.amountTo, activeTokenTo.id])
 
+  
   useEffect(() => {
     swapResult.action == 'Invest' ?
       setSwapResult({...swapResult, labelFrom: 'From', labelTo: 'To'}) :
       setSwapResult({...swapResult, labelFrom: 'To', labelTo: 'From'})
   }, [swapResult.action])
+
+
 
   return (
     <SwapContext.Provider

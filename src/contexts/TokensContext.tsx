@@ -6,6 +6,7 @@ import { getTokenBalance, getTokenPrice } from '../services/tokenSet'
 import { formatEther } from '@ethersproject/units'
 
 interface TokenContextValues {
+  id: number
   name: string | null | undefined
   symbol: string
   image: string
