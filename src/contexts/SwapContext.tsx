@@ -3,27 +3,42 @@ import { createContext, useEffect, useState } from 'react'
 import { tokensInfo } from '../constants/tokens'
 import { activeTokensFrom } from '../constants/tokenSet'
 import {
-    getAmountInToIssueExactSet,
-  getAmountOutOnRedeemSet,
+  getAmountInToIssueExactSet,
   getEstimatedIssueSetAmount,
   getTokenBalance,
-  getTokenDecimals,
   getTokenPrice,
+  issueExactSetFromToken
 } from '../services/tokenSet'
 import { BigNumber } from '@ethersproject/bignumber'
-import { formatEther, formatUnits, parseEther, parseUnits } from '@ethersproject/units'
+import { formatEther, formatUnits, parseUnits } from '@ethersproject/units'
 import { coingeckoGetTokenPrice } from '../services/coingeckoApi'
-import { isConstructorDeclaration } from 'typescript'
+
+interface SwapResultValues {
+  amountFrom: string
+  amountTo: string
+  activeFocus: string
+  action: string
+  labelFrom: string
+  labelTo: string
+}
+
+const swapResultInitial = {
+  amountFrom: '0',
+  amountTo: '0',
+  activeFocus: 'From',
+  action: 'Invest',
+  labelFrom: 'From',
+  labelTo: 'To'
+}
 
 interface SwapContextValues {
   activeTokenFrom: any
   setActiveTokenFrom: any
   activeTokenTo: any
   setActiveTokenTo: any
-  amountFrom: any
-  setAmountFrom: any
-  amountTo: any
-  setAmountTo: any
+  swapResult: SwapResultValues
+  setSwapResult: any
+  handleInvest: any
 }
 
 export const SwapContext = createContext<SwapContextValues>({
@@ -31,21 +46,37 @@ export const SwapContext = createContext<SwapContextValues>({
   setActiveTokenFrom: null,
   activeTokenTo: null,
   setActiveTokenTo: null,
-  amountFrom: null,
-  setAmountFrom: null,
-  amountTo: null,
-  setAmountTo: null,
+  swapResult: swapResultInitial,
+  setSwapResult: null,
+  handleInvest: null
+  
 })
 
 export const SwapProvider: React.FC<any> = ({ children }) => {
   const { account, library, chainId } = useWeb3React()
   const [activeTokenFrom, setActiveTokenFrom] = useState(activeTokensFrom[0])
   const [activeTokenTo, setActiveTokenTo] = useState(tokensInfo[0])
-  const [amountFrom, setAmountFrom] = useState('0')
-  const [amountTo, setAmountTo] = useState('0')
+  const [swapResult, setSwapResult] = useState<SwapResultValues>(swapResultInitial)
+ 
+  const handleInvest = async () => {
+    // console.log(activeTokenTo.contractPolygon,
+    //      activeTokenFrom.contractPolygon,
+    //      parseUnits(swapResult.amountTo,'18').toString(),
+    //      parseUnits('1','16').toString())
+    await issueExactSetFromToken(
+      library,
+      chainId || 0,
+      account || '',
+      activeTokenTo.contractPolygon,
+      activeTokenFrom.contractPolygon,
+      parseUnits(swapResult.amountTo,'18').toString(),
+      parseUnits('1','16').toString()
+    )
+  }
 
+  // COMBO FROM CHANGE
   useEffect(() => {
-    async function getBalance(token: any) {
+    async function updateTokenFrom(token: any) {
       const balance = await getTokenBalance(
         library,
         chainId || 0,
@@ -54,7 +85,6 @@ export const SwapProvider: React.FC<any> = ({ children }) => {
       )
 
       const price = await coingeckoGetTokenPrice(token.contract)
-      
 
       if (balance)
         setActiveTokenFrom({
@@ -63,10 +93,11 @@ export const SwapProvider: React.FC<any> = ({ children }) => {
           price: price.toString(),
         })
     }
-    getBalance(activeTokenFrom)
-    setAmountFrom('0')
+    updateTokenFrom(activeTokenFrom)
   }, [activeTokenFrom.id])
 
+
+  // COMBO FROM CHANGE
   useEffect(() => {
     async function getBalance(contract: string) {
       const balance = await getTokenBalance(
@@ -88,20 +119,53 @@ export const SwapProvider: React.FC<any> = ({ children }) => {
     getBalance(activeTokenTo.contractPolygon)
   }, [activeTokenTo.id])
 
+
+
   useEffect(() => {
-    async function updateSwapInfo() {
-      const amountTo = await getEstimatedIssueSetAmount(
+    async function updateSwapResult() {
+      const result = await getEstimatedIssueSetAmount(
         library,
         chainId || 0,
         activeTokenTo.contractPolygon,
         activeTokenFrom.contractPolygon,
-        parseUnits(amountFrom, activeTokenFrom.decimals).toString(),
+        parseUnits(swapResult.amountFrom, activeTokenFrom.decimals).toString(),
       )
-     setAmountTo(Number(formatUnits(amountTo,'18')).toFixed(4))
+      const amountTo = Number(formatUnits(result,'18')).toFixed(4).toString()
+      
+      setSwapResult({...swapResult, amountTo})
+      console.log('Change From! ', amountTo)
     }
 
-    updateSwapInfo()
-  }, [amountFrom])
+    if (Number(swapResult.amountFrom) > 0 && swapResult.activeFocus == 'From')
+      updateSwapResult()
+
+  }, [swapResult.amountFrom, activeTokenFrom.id])
+
+  useEffect(() => {
+    async function updateSwapResult() {
+      const result = await getAmountInToIssueExactSet(
+        library,
+        chainId || 0,
+        activeTokenTo.contractPolygon,
+        activeTokenFrom.contractPolygon,
+        parseUnits(swapResult.amountTo, '18').toString(),
+      )
+      const amountFrom = Number(formatUnits(result,activeTokenFrom.decimals)).toFixed(4).toString()
+      
+      setSwapResult({...swapResult, amountFrom})
+      console.log('Change To! ', amountFrom)
+    }
+
+    if (Number(swapResult.amountTo) > 0 && swapResult.activeFocus == 'To')
+      updateSwapResult()
+
+  }, [swapResult.amountTo, activeTokenTo.id])
+
+  useEffect(() => {
+    swapResult.action == 'Invest' ?
+      setSwapResult({...swapResult, labelFrom: 'From', labelTo: 'To'}) :
+      setSwapResult({...swapResult, labelFrom: 'To', labelTo: 'From'})
+  }, [swapResult.action])
 
   return (
     <SwapContext.Provider
@@ -110,10 +174,9 @@ export const SwapProvider: React.FC<any> = ({ children }) => {
         setActiveTokenFrom: setActiveTokenFrom,
         activeTokenTo: activeTokenTo,
         setActiveTokenTo: setActiveTokenTo,
-        amountFrom: amountFrom,
-        setAmountFrom: setAmountFrom,
-        amountTo: amountTo,
-        setAmountTo: setAmountTo,
+        swapResult: swapResult,
+        setSwapResult: setSwapResult,
+        handleInvest: handleInvest
       }}
     >
       {children}

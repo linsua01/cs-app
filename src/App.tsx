@@ -8,18 +8,20 @@ import { Footer } from './components/Footer'
 import { Swap } from './components/Swap/Swap'
 import { Container } from 'react-bootstrap'
 
+
 const App: React.FC = () => {
   return (
     <>
       <Providers>
         <NavBar />
-        <Container className="py-5">
+        {/* <Container className="py-5">
           <Swap />
-        </Container>
+        </Container> */}
         <Hero />
         <Tokens />
         <Footer />
       </Providers>
+       
     </>
   )
 }

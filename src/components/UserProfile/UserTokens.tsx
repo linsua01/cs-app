@@ -1,6 +1,7 @@
 import React from 'react'
 import { Container, Card, Table, Button } from 'react-bootstrap'
 import useTokens from '../../hooks/useTokens'
+import { SwapOffcanvas } from '../Swap/SwapOffcanvas'
 
 export const UserTokens = () => {
   const { tokens, setTokens } = useTokens()
@@ -56,13 +57,7 @@ export const UserTokens = () => {
                       <td className='text-end'>{Number(token.amount).toFixed(4)}</td>
                       <td className='text-end'>${token.balance.toFixed(2)}</td>
                       <td>
-                        <Button
-                          className="me-2 btn-sm"
-                          onClick={() => handleWithdraw(index)}
-                        >
-
-                            Withdraw
-                        </Button>
+                      <SwapOffcanvas action='Withdraw'/>
                       </td>
                     </tr>
                   ),

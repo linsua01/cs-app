@@ -1,6 +1,9 @@
 
 import { Container, Table, Button, Card } from 'react-bootstrap'
 import useTokens from '../hooks/useTokens'
+import { SwapOffcanvas } from './Swap/SwapOffcanvas'
+
+
 
 export const Tokens = () => {
   const {tokens, setTokens} = useTokens()
@@ -52,13 +55,9 @@ export const Tokens = () => {
                     <td>{token.name}</td>
                     <td>{token.fee}</td>
                     <td>
-                      <Button 
-                        className="me-2 btn-sm"
-                        onClick={()=>handleInvest(index)}
-                      >
-                        Invest
-                      </Button>
+                      <SwapOffcanvas action='Invest'/>
                       <Button className="me-2 btn-sm">View</Button>
+                      
                     </td>
                   </tr>
                 ))} 

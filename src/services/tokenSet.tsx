@@ -42,6 +42,19 @@ export function getContract(
   return contract
 }
 
+export function getSignerContract(
+  library: any,
+  ABI: any,
+  address: string,
+  account: string
+): Contract | undefined {
+  const contract =
+    !!address && !!ABI && !!library
+      ? new Contract(address, ABI, library.getSigner(account).connectUnchecked())
+      : undefined
+  return contract
+}
+
 export const getTokenBalance = async (
   library: any,
   chainId: number,
@@ -108,6 +121,33 @@ export const getAmountOutOnRedeemSet = async (
   const amountTo = await contract?.getAmountOutOnRedeemSet(contractAddressTo, contractAddressFrom, amountFrom )
   return amountTo
 }
+
+// export const issueExactSetFromToken = async (
+//   library: any,
+//   chainId: number,
+//   contractAddressTo: string,
+//   contractAddressFrom: string,
+//   amountFrom: string
+// ): Promise<string> => {
+//   const contract = getContract(library, exchangeIssuanceV2ABI, exchangeIssuanceV2.contractPolygon)
+//   const amountTo = await contract?.issueExactSetFromToken(contractAddressTo, contractAddressFrom, amountFrom )
+//   return amountTo
+// }
+
+export const issueExactSetFromToken = async (
+  library: any,
+  chainId: number,
+  account: string,
+  contractAddressTo: string,
+  contractAddressFrom: string,
+  amountTo: string,
+  amountFrom: string,
+): Promise<string> => {
+  const contract = getSignerContract(library, exchangeIssuanceV2ABI, exchangeIssuanceV2.contractPolygon, account)
+  const result = await contract?.issueExactSetFromToken(contractAddressTo, contractAddressFrom, amountTo, amountFrom )
+  return result
+}
+
 
 
 
